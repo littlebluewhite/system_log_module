@@ -27,7 +27,7 @@ class APILogRouter(APILogOperate):
         create_schemas = self.create_schemas
 
         @router.get("/", response_model=list[main_schemas])
-        async def get_logs(start: Annotated[str, Query()] = ...,
+        async def get_logs(start: Annotated[str, Query()],
                            stop: Annotated[str | None, Query()] = "",
                            modules: Annotated[list[str] | None, Query()] = None,
                            submodule: Annotated[str | None, Query()] = "",
