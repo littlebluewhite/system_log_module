@@ -1,11 +1,11 @@
 services:
   mysql:
     image: mysql
-    container_name: NodeObject_mysql
+    container_name: system_log_mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_DATABASE: node_object
+      MYSQL_DATABASE: system_log
       MYSQL_ROOT_USER: root
       MYSQL_ROOT_PASSWORD: 123456
       MYSQL_USER: wilson
@@ -21,7 +21,7 @@ services:
 
   redis:
     image: redis
-    container_name: NodeObject_redis
+    container_name: system_log_redis
     restart: always
     ports:
       - "6379:6379"
@@ -34,7 +34,7 @@ services:
 
   influxdb:
     image: influxdb
-    container_name: NodeObject_influxdb
+    container_name: system_log_influxdb
     restart: always
     volumes:
       - ./deploy/influxdb/data:/var/lib/influxdb2
@@ -44,7 +44,7 @@ services:
       DOCKER_INFLUXDB_INIT_USERNAME: wilson
       DOCKER_INFLUXDB_INIT_PASSWORD: 123456123456
       DOCKER_INFLUXDB_INIT_ORG: my-org
-      DOCKER_INFLUXDB_INIT_BUCKET: node_object
+      DOCKER_INFLUXDB_INIT_BUCKET: system_log
       DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: my-super-influxdb-auth-token
     ports:
       - "8086:8086"
@@ -54,13 +54,13 @@ services:
       timeout: 10s
       retries: 5
 
-  node_object:
-    container_name: NodeObject
+  system_log:
+    container_name: system_log
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9330:9330"
+      - "9360:9360"
     volumes:
       - ./config/config.yaml:/source/config/config.yaml
       - ./deploy/api/dockerLog:/app/log
