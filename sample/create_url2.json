@@ -1,0 +1,114 @@
+[
+  {
+    "module": "alarm",
+    "submodule": "event",
+    "item": "event",
+    "path": "/api/alarm/event/event",
+    "rules": [
+      {
+        "method": "DELETE",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user2"],
+        "account_group": ["group1"]
+      },
+      {
+        "method": "POST",
+        "status_code": 484,
+        "message_code": "4",
+        "description": "string",
+        "account_user": ["user2"],
+        "account_group": []
+      },
+      {
+        "method": "PATCH",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user3", "user4"],
+        "account_group": ["group2", "group3"]
+      }
+    ]
+  },
+  {
+    "module": "alarm",
+    "submodule": "setting",
+    "item": "rule",
+    "path": "/api/alarm/setting/rule",
+    "rules": [
+      {
+        "method": "DELETE",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user2"],
+        "account_group": ["group1"]
+      },
+      {
+        "method": "POST",
+        "status_code": 484,
+        "message_code": "4",
+        "description": "string",
+        "account_user": ["user2"],
+        "account_group": []
+      },
+      {
+        "method": "PATCH",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user3", "user4"],
+        "account_group": ["group2", "group3"]
+      },
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user1", "user5", "user7"],
+        "account_group": ["group5", "group1"]
+      }
+    ]
+  },
+  {
+    "module": "alarm",
+    "submodule": "setting",
+    "item": "category",
+    "path": "/api/alarm/setting/category",
+    "rules": [
+      {
+        "method": "DELETE",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user2"],
+        "account_group": ["group1"]
+      },
+      {
+        "method": "POST",
+        "status_code": 484,
+        "message_code": "4",
+        "description": "string",
+        "account_user": ["user2"],
+        "account_group": []
+      },
+      {
+        "method": "PATCH",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user3", "user4"],
+        "account_group": ["group2", "group3"]
+      },
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user1", "user5", "user7"],
+        "account_group": ["group5", "group1"]
+      }
+    ]
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "module": "account",
+    "submodule": "login",
+    "item": "login",
+    "path": "/api/account/login/login",
+    "rules": [
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user1", "user2"],
+        "account_group": ["group1"]
+      },
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "2",
+        "description": "string",
+        "account_user": ["user2"],
+        "account_group": []
+      },
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "3",
+        "description": "string",
+        "account_user": ["user1", "user3", "user4"],
+        "account_group": ["group2", "group3"]
+      }
+    ]
+  },
+  {
+    "module": "account",
+    "submodule": "login",
+    "item": "token",
+    "path": "/api/account/login/token",
+    "rules": [
+      {
+        "method": "GET",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user1", "user2"],
+        "account_group": ["group1"]
+      },
+      {
+        "method": "POST",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user2"],
+        "account_group": []
+      },
+      {
+        "method": "PATCH",
+        "status_code": 484,
+        "message_code": "1",
+        "description": "string",
+        "account_user": ["user1", "user3", "user4"],
+        "account_group": ["group2", "group3"]
+      }
+    ]
+  }
+]

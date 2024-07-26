@@ -29,15 +29,15 @@ class APILogRouter(APILogOperate):
         @router.get("/", response_model=list[main_schemas])
         async def get_logs(start: Annotated[str, Query()] = ...,
                            stop: Annotated[str | None, Query()] = "",
-                           module: Annotated[str | None, Query()] = "",
+                           modules: Annotated[list[str] | None, Query()] = None,
                            submodule: Annotated[str | None, Query()] = "",
                            item: Annotated[str | None, Query()] = "",
-                           method: Annotated[str | None, Query()] = "",
+                           methods: Annotated[list[str] | None, Query()] = None,
                            status_code: Annotated[str | None, Query()] = "",
                            message_code: Annotated[str | None, Query()] = "",
                            account: Annotated[str | None, Query()] = "",
                            ip: Annotated[str | None, Query()] = ""):
-            return JSONResponse(content=self.get_logs(start, stop, module, submodule, item, method,
+            return JSONResponse(content=self.get_logs(start, stop, modules, submodule, item, methods,
                                  status_code, message_code, account, ip))
 
         @router.post("/")

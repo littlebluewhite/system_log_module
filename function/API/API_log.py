@@ -13,7 +13,7 @@ class APILogOperate(GeneralOperate):
         GeneralOperate.__init__(self, module, redis_db, influxdb, exc)
         self.api_url_operate = APIUrlOperate(data.API.API_url, redis_db, influxdb, exc)
 
-    def get_logs(self, start, stop, module, submodule, item, method,
+    def get_logs(self, start, stop, modules, submodule, item, methods,
                  status_code, message_code, account, ip):
         stop_str = ""
         module_str = ""
@@ -29,14 +29,18 @@ class APILogOperate(GeneralOperate):
             start_str = f", start: {start}"
         if stop:
             stop_str = f", stop: {stop}"
-        if module:
-            module_str = f"""|> filter(fn:(r) => r.module == "{module}")"""
+        if modules:
+            module_str = f"""|> filter(fn:(r) => """
+            combine = " or ".join([f'''r.module == "{module}"''' for module in modules]) + ")"
+            module_str += combine
         if submodule:
             submodule_str = f"""|> filter(fn:(r) => r.submodule == "{submodule}")"""
         if item:
             item_str = f"""|> filter(fn:(r) => r.item == "{item}")"""
-        if method:
-            method_str = f"""|> filter(fn:(r) => r.method == "{method}")"""
+        if methods:
+            method_str = f"""|> filter(fn:(r) => """
+            combine = " or ".join([f'''r.method == "{method}"''' for method in methods]) + ")"
+            method_str += combine
         if status_code:
             status_code_str = f"""|> filter(fn:(r) => r.status_code == "{status_code}")"""
         if message_code:

@@ -1,14 +1,14 @@
 {
   "timestamp": 1721900020,
-  "module": "b",
-  "submodule": "bb",
-  "item": "bbb",
-  "method": "DELETE",
-  "status_code": "213",
-  "message_code": "4",
-  "response_size": "12346",
+  "module": "alarm",
+  "submodule": "setting",
+  "item": "rule",
+  "method": "GET",
+  "status_code": "484",
+  "message_code": "1",
+  "response_size": "888",
   "account": "user1",
   "ip": "127.0.0.1",
-  "api_url": "c/cc/ccc",
+  "api_url": "/api/alarm/setting/rule",
   "web_path": "string"
 }
