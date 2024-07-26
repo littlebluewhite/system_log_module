@@ -15,7 +15,7 @@ influxdb:
   port: 8086
   org: my-org
   token: my-super-influxdb-auth-token
-  bucket: node_object
+  bucket: system_log
 testSQL:
   host: 127.0.0.1
   port: 3306

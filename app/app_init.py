@@ -7,9 +7,13 @@ from general_operator.app.redis_db.redis_db import RedisDB
 from general_operator.function.exception import GeneralOperatorException
 from general_operator.routers.General_table_router import GeneralRouter
 from redis.client import Redis
-import data.rule
+import data.rule, data.url
+import data.API.API_url
+import data.API.API_log
 from app.SQL import models
 from function.config_manager import ConfigManager
+from routers.API.API_log import APILogRouter
+from routers.API.API_url import APIUrlRouter
 
 # from fastapi.security.api_key import APIKeyHeader
 
@@ -42,7 +46,12 @@ def create_app(db: SQLDB, redis_db: Redis, influxdb: InfluxDB):
     )
     db_session = db.new_db_session()
 
-
+    app.include_router(APIUrlRouter(data.API.API_url, redis_db, influxdb,
+                                    GeneralOperatorException, db_session).create())
+    app.include_router(APILogRouter(data.API.API_log, redis_db, influxdb,
+                                    GeneralOperatorException, db_session).create())
+    app.include_router(GeneralRouter(data.url, redis_db, influxdb,
+                                     GeneralOperatorException, db_session).create())
     app.include_router(GeneralRouter(data.rule, redis_db, influxdb,
                                      GeneralOperatorException, db_session).create())
 
