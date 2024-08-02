@@ -6,7 +6,9 @@ from general_operator.app.influxdb.influxdb import InfluxDB
 from general_operator.app.redis_db.redis_db import RedisDB
 from general_operator.function.exception import GeneralOperatorException
 from general_operator.routers.General_table_router import GeneralRouter
+from general_operator.routers.all_table import AllTableRouter
 from redis.client import Redis
+import data
 import data.rule, data.url
 import data.API.API_url
 import data.API.API_log
@@ -54,6 +56,9 @@ def create_app(db: SQLDB, redis_db: Redis, influxdb: InfluxDB):
                                      GeneralOperatorException, db_session).create())
     app.include_router(GeneralRouter(data.rule, redis_db, influxdb,
                                      GeneralOperatorException, db_session).create())
+    app.include_router(AllTableRouter(module=data, redis_db=redis_db, influxdb=influxdb,
+                                      exc=GeneralOperatorException, db_session=db_session,
+                                      is_initial=ConfigManager.server.is_initial).create())
 
     @app.exception_handler(GeneralOperatorException)
     async def unicorn_exception_handler(request: Request, exc: GeneralOperatorException):

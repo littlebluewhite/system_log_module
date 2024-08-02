@@ -29,3 +29,4 @@ server:
   port: 9360
   rear_timeout: 300  # s
   write_timeout: 300  # s
+  is_initial: True
