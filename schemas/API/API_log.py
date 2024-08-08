@@ -16,4 +16,5 @@ class Log(BaseModel):
     account: str | None = None
     ip: str | None = None
     api_url: str | None = None
+    query_params: str | None = None
     web_path: str | None = None

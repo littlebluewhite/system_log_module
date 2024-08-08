@@ -1,3 +1,4 @@
+import csv
 import json
 
 from fastapi.encoders import jsonable_encoder
@@ -7,7 +8,7 @@ import data.API.API_url
 
 from function.API.API_url import APIUrlOperate
 
-
+csv.field_size_limit(10**7)
 class APILogOperate(GeneralOperate):
     def __init__(self, module, redis_db, influxdb, exc):
         GeneralOperate.__init__(self, module, redis_db, influxdb, exc)
