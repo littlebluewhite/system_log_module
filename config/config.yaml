@@ -30,3 +30,5 @@ server:
   rear_timeout: 300  # s
   write_timeout: 300  # s
   is_initial: True
+
+  notification_host: 127.0.0.1:59380

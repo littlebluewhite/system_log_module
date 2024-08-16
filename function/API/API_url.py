@@ -104,3 +104,6 @@ class APIUrlOperate(GeneralOperate, APIUrlFunction):
 
     def get_rule_index_table(self, complex_key: str):
         return self.rule_operate.read_from_redis_by_key_set_without_exception({complex_key}, 1)
+
+    def get_rule_table(self, key_set: set):
+        return self.rule_operate.read_from_redis_by_key_set_without_exception(key_set, 0)

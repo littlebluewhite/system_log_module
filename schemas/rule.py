@@ -22,8 +22,8 @@ class RuleBasic(BaseModel):
     status_code: int
     message_code: str
     description: str
-    account_user: list[str]
     account_group: list[str]
+    account_user: list[str]
 
 
 class Rule(RuleBasic):

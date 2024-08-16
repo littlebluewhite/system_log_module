@@ -1,14 +1,19 @@
 import csv
 import json
+from pydoc import describe
 
-from fastapi.encoders import jsonable_encoder
+import grpc
 from general_operator.function.General_operate import GeneralOperate
 import influxdb_client
 import data.API.API_url
 
 from function.API.API_url import APIUrlOperate
+from function.config_manager import ConfigManager
+from server.proto import notification_pb2_grpc, notification_pb2
 
-csv.field_size_limit(10**7)
+csv.field_size_limit(10 ** 7)
+
+
 class APILogOperate(GeneralOperate):
     def __init__(self, module, redis_db, influxdb, exc):
         GeneralOperate.__init__(self, module, redis_db, influxdb, exc)
@@ -26,8 +31,6 @@ class APILogOperate(GeneralOperate):
         account_str = ""
         ip_str = ""
 
-        if start:
-            start_str = f", start: {start}"
         if stop:
             stop_str = f", stop: {stop}"
         if modules:
@@ -70,7 +73,6 @@ class APILogOperate(GeneralOperate):
 
         return result
 
-
     def create_logs(self, log, db):
         points = [influxdb_client.Point(
             "log").tag("module", str(log.module))
@@ -90,9 +92,23 @@ class APILogOperate(GeneralOperate):
             complex_key = f"{path_list[0][0]}{log.method}{log.status_code}{log.message_code}"
             rule_list = self.api_url_operate.get_rule_index_table(complex_key)
             if rule_list:
-                # TODO notify
                 rule_id = rule_list[0][0]
-                print(rule_id)
+                print("rule id: ", rule_id)
+                rule = self.api_url_operate.get_rule_table({rule_id})[0]
+
+                # notify
+                notification_message = (f"module: {log.module}, submodule: {log.submodule}, item: {log.item},"
+                                        f" method: {log.method}, status_code: {log.status_code},"
+                                        f" message_code: {log.message_code}, log_message: {log.message},"
+                                        f" rule_description: {rule["description"]}")
+                try:
+                    self.notify(notification_message, rule["account_group"],
+                                rule["account_user"], ["wilson.lin@nadisystem.com", "daniel.khun@nadisystem.com"])
+                    print("notify success")
+                except Exception as e:
+                    print("notify error: ", e)
+
+
         else:
             # create new url
             url_create_list = [self.api_url_operate.create_schemas(
@@ -104,3 +120,17 @@ class APILogOperate(GeneralOperate):
             )]
             self.api_url_operate.create_urls(url_create_list, db)
             print("create url success")
+
+    @staticmethod
+    def notify(message, groups, accounts, emails):
+        with grpc.insecure_channel(f'{ConfigManager.server.notification_host}') as channel:
+            stub = notification_pb2_grpc.NotificationServiceStub(channel)
+            request = notification_pb2.EmailSendRequest(
+                sender="System log",
+                subject="Log notification",
+                message=message,
+                groups=groups,
+                accounts=accounts,
+                emails=emails
+            )
+            return stub.SendEmail(request)

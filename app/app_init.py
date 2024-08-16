@@ -21,14 +21,6 @@ from routers.API.API_url import APIUrlRouter
 
 from version import version
 
-
-def mount_config(conf_path: str = None):
-    ns = ConfigManager.parse_cli_args()
-    file = ns.config_path if ns.config_path else conf_path
-    config = ConfigManager.read_config(file)
-    return config
-
-
 def create_connection(config):
     redis_db = RedisDB(config.redis.to_dict()).redis_client()
     db = SQLDB(config.sql.to_dict())
