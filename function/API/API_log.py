@@ -73,7 +73,7 @@ class APILogOperate(GeneralOperate):
 
         return result
 
-    def create_logs(self, log, db):
+    def create_log(self, log, db):
         points = [influxdb_client.Point(
             "log").tag("module", str(log.module))
                   .tag("submodule", str(log.submodule))

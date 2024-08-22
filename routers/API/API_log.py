@@ -41,10 +41,10 @@ class APILogRouter(APILogOperate):
                                  status_code, message_code, account, ip))
 
         @router.post("/")
-        async def create_logs(log: create_schemas,
+        async def create_log(log: create_schemas,
                               db: Session = Depends(create_get_db(self.db_session))):
             with db.begin():
-                self.create_logs(log, db)
+                self.create_log(log, db)
                 return JSONResponse(content="ok")
 
         return router
