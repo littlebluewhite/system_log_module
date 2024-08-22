@@ -1,6 +1,5 @@
 import csv
 import json
-from pydoc import describe
 
 import grpc
 from general_operator.function.General_operate import GeneralOperate

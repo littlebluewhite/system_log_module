@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+service SystemLogService {
+  rpc WriteLog (LogRequest) returns (LogResponse);
+}
+
+message LogRequest {
+  double timestamp = 1;
+  string module = 2;
+  string submodule = 3;
+  string item = 4;
+  string method = 5;
+  string status_code = 6;
+  string message_code = 7;
+  string message = 8;
+  string response_size = 9;
+  string account = 10;
+  string ip = 11;
+  string api_url = 12;
+  string query_params = 13;
+  string web_path = 14;
+}
+
+message LogResponse {
+  string message = 1;
+}
