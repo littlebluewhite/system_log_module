@@ -61,6 +61,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "9360:9360"
+      - "59360:59360"
     volumes:
       - ./config/config.yaml:/source/config/config.yaml
       - ./deploy/api/dockerLog:/app/log

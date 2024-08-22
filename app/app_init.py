@@ -56,8 +56,10 @@ def create_app(db: SQLDB, redis_db: Redis, influxdb: InfluxDB):
     async def unicorn_exception_handler(request: Request, exc: GeneralOperatorException):
         return JSONResponse(
             status_code=exc.status_code,
-            content={"message": f"{exc.detail}"},
+            content={"message": f"{exc.message}", "message_code": f"{exc.message_code}"},
+            headers={"message": f"{exc.message}", "message_code": f"{exc.message_code}"}
         )
+
 
     @app.get("/exception")
     async def test_exception():
