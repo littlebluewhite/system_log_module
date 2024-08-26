@@ -20,8 +20,8 @@ class Method(str, Enum):
 class RuleBasic(BaseModel):
     method: Method
     status_code: int
-    message_code: str
-    description: str
+    message_code: str | None = None
+    description: str | None = None
     account_group: list[str]
     account_user: list[str]
 

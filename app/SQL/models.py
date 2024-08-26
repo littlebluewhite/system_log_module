@@ -44,7 +44,7 @@ class Rule(Base):
     url_id = Column(Integer, ForeignKey("url.id", ondelete="CASCADE"), nullable=False)
     method = Column(Enum(Method), nullable=False)
     status_code = Column(Integer, nullable=False)
-    message_code = Column(String(256), nullable=False)
+    message_code = Column(String(256), default="", nullable=False)
     description = Column(String(256))
     account_user = Column(JSON)
     account_group = Column(JSON)

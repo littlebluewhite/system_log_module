@@ -60,6 +60,10 @@ class APIUrlOperate(GeneralOperate, APIUrlFunction):
             original_url: dict = url_original_dict[update_data["id"]]
             for r in update_data["rules"]:
                 if r["id"] is None:
+                    if r["account_group"] is None:
+                        r["account_group"] = []
+                    if r["account_user"] is None:
+                        r["account_user"] = []
                     rule["create_list"].append(self.rule_operate.create_schemas(**r, url_id=update_data["id"]))
                 elif r["id"] in rule_original_dict and r["id"]>0:
                     rule["update_list"].append(self.rule_operate.multiple_update_schemas(**r, url_id=update_data["id"]))
