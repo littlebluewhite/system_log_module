@@ -85,7 +85,9 @@ class APILogOperate(GeneralOperate):
                   .time(int(log.timestamp * 10 ** 6) * 1000)
                   .field("data", log.json())]
         self.write(points)
-        path_list = self.api_url_operate.get_path_index_table(str(log.api_url))
+
+        path_list = self.api_url_operate.get_path_index_table(
+            f"{log.module}{log.submodule}{log.item}")
         if path_list:
             # check rule
             complex_key = f"{path_list[0][0]}{log.method}{log.status_code}{log.message_code}"

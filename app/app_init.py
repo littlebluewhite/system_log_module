@@ -60,9 +60,4 @@ def create_app(db: SQLDB, redis_db: Redis, influxdb: InfluxDB):
             headers={"message": f"{exc.message}", "message_code": f"{exc.message_code}"}
         )
 
-
-    @app.get("/exception")
-    async def test_exception():
-        raise GeneralOperatorException(status_code=423, detail="test exception")
-
     return app

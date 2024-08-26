@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from general_operator.app.SQL.database import Base
-from sqlalchemy import Column, Integer, JSON, DateTime, Enum, String, ForeignKey
+from sqlalchemy import Column, Integer, JSON, DateTime, Enum, String, ForeignKey, UniqueConstraint
 from enum import Enum as PyEnum
 
 from sqlalchemy.orm import relationship
@@ -14,12 +14,16 @@ class Url(Base):
     module = Column(String(256), nullable=False)
     submodule = Column(String(256), nullable=False)
     item = Column(String(256), nullable=False)
-    path = Column(String(256), nullable=False, unique=True)
+    path = Column(String(256), nullable=False)
 
     rules = relationship("Rule", cascade="all, delete", lazy="joined")
 
     created_at = Column(DateTime, default=datetime.now)
     updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)  # 最後更新時間
+
+    __table_args__ = (
+        UniqueConstraint('module', 'submodule', 'item', name='_module_submodule_item_uc'),
+    )
 
 class Method(PyEnum):
     GET = "GET"

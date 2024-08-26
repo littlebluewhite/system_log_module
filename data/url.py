@@ -4,7 +4,7 @@ from app.SQL import models
 name = "url"
 redis_tables = [
     {"name": name, "key": "id"},
-    {"name": name + "_path", "key": "path"},
+    {"name": name + "_module_submodule_item", "key": "module__submodule__item"},
 ]
 
 sql_model = models.Url
