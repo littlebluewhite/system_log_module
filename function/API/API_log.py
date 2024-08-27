@@ -97,6 +97,11 @@ class APILogOperate(GeneralOperate):
                 print("rule id: ", rule_id)
                 rule = self.api_url_operate.get_rule_table({rule_id})[0]
 
+                if not rule["account_group"] and not rule["account_user"]:
+                    print("no account to notify")
+                    return
+
+
                 # notify
                 notification_message = (f"module: {log.module}, submodule: {log.submodule}, item: {log.item},"
                                         f" method: {log.method}, status_code: {log.status_code},"
