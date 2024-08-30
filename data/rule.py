@@ -2,7 +2,7 @@ import data.url
 from app.SQL import models
 import schemas.rule
 
-name = "rule"
+name = "system_rule"
 redis_tables = [
     {"name": name, "key": "id"},
     {"name": name+"_code", "key": "url_id__method__status_code__message_code"}
