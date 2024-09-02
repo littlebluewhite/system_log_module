@@ -139,4 +139,4 @@ class APILogOperate(GeneralOperate):
                 accounts=accounts,
                 emails=emails
             )
-            return stub.SendEmail(request)
+            return stub.SendEmailSimple(request)
