@@ -1,5 +1,6 @@
 import csv
 import json
+import time
 
 import grpc
 from general_operator.function.General_operate import GeneralOperate
@@ -108,8 +109,10 @@ class APILogOperate(GeneralOperate):
                                         f" message_code: {log.message_code}, log_message: {log.message},"
                                         f" rule_description: {rule["description"]}")
                 try:
+                    a = time.time()
                     self.notify(notification_message, rule["account_group"],
                                 rule["account_user"], ["wilson.lin@nadisystem.com", "daniel.khun@nadisystem.com"])
+                    print("notify cost: ", time.time() - a)
                     print("notify success")
                 except Exception as e:
                     print("notify error: ", e)
