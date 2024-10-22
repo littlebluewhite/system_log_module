@@ -1,13 +1,11 @@
 import redis
 from fastapi import APIRouter, Depends, Query
-from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from general_operator.app.influxdb.influxdb import InfluxDB
 from general_operator.dependencies.db_dependencies import create_get_db
 from general_operator.dependencies.get_query_dependencies import CommonQuery
 from sqlalchemy.orm import sessionmaker, Session
 
-from data.url import update_schemas
 from function.API.API_url import APIUrlOperate
 
 
@@ -31,7 +29,7 @@ class APIUrlRouter(APIUrlOperate):
 
         @router.get("/", response_model=list[self.main_schemas])
         async def get_api_urls(common: CommonQuery = Depends(),
-                           db: Session = Depends(create_get_db(self.db_session))):
+                               db: Session = Depends(create_get_db(self.db_session))):
             if common.pattern == "all":
                 urls = self.url_operate.read_all_data_from_redis()[common.skip:][:common.limit]
             else:
@@ -41,13 +39,13 @@ class APIUrlRouter(APIUrlOperate):
 
         @router.post("/", response_model=list[self.main_schemas])
         async def create_api_urls(create_data_list: list[create_schemas],
-                              db: Session = Depends(create_get_db(self.db_session))):
+                                  db: Session = Depends(create_get_db(self.db_session))):
             with db.begin():
                 return JSONResponse(content=self.create_urls(create_data_list, db))
 
         @router.patch("/", response_model=list[self.main_schemas])
         async def update_api_urls(update_data_list: list[multiple_update_schemas],
-                              db: Session = Depends(create_get_db(self.db_session))):
+                                  db: Session = Depends(create_get_db(self.db_session))):
             with db.begin():
                 return JSONResponse(content=self.update_urls(update_data_list, db))
 
@@ -57,6 +55,5 @@ class APIUrlRouter(APIUrlOperate):
             with db.begin():
                 self.delete_urls(id_set, db)
                 return JSONResponse(content="ok")
-
 
         return router
