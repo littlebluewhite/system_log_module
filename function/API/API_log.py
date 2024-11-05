@@ -111,7 +111,7 @@ class APILogOperate(GeneralOperate):
                 try:
                     a = time.time()
                     self.notify(notification_message, rule["account_group"],
-                                rule["account_user"], ["wilson.lin@nadisystem.com", "daniel.khun@nadisystem.com"])
+                                rule["account_user"], [])
                     print("notify cost: ", time.time() - a)
                     print("notify success")
                 except Exception as e:
