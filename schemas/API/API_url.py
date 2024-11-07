@@ -1,4 +1,7 @@
 from datetime import datetime
+
+from pydantic import Field
+
 from schemas.rule import RuleBasic, RuleUpdateBasic
 from schemas.url import UrlBasic, UrlCreate, UrlUpdate
 
@@ -17,8 +20,8 @@ class APIUrl(UrlBasic):
     updated_at: datetime
 
 class APIRuleCreate(RuleBasic):
-    account_user: list[str] | None = list()
-    account_group: list[str] | None = list()
+    account_user: list[str] | None = Field(default_factory=list)
+    account_group: list[str] | None = Field(default_factory=list)
 
 
 class APIUrlCreate(UrlCreate):

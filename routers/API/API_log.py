@@ -19,7 +19,7 @@ class APILogRouter(APILogOperate):
     def create(self):
         router = APIRouter(
             prefix="/api/log",
-            tags=["API", "log"],
+            tags=["log"],
             dependencies=[],
         )
 

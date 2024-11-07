@@ -1,24 +1,8 @@
 from datetime import datetime
-from enum import Enum
-from typing import ClassVar
-
 from pydantic import BaseModel, Field
 
 
-class Method(str, Enum):
-    GET= "GET"
-    POST = "POST"
-    PUT = "PUT"
-    PATCH = "PATCH"
-    DELETE = "DELETE"
-    OPTIONS = "OPTIONS"
-    HEAD = "HEAD"
-    CONNECT = "CONNECT"
-    TRACE = "TRACE"
-
-
-class RuleBasic(BaseModel):
-    method: Method
+class CommonRuleBasic(BaseModel):
     status_code: int
     message_code: str | None = None
     description: str | None = None
@@ -26,9 +10,8 @@ class RuleBasic(BaseModel):
     account_user: list[str]
 
 
-class Rule(RuleBasic):
+class CommonRule(CommonRuleBasic):
     id: int
-    url_id: int
     created_at: datetime
     updated_at: datetime
 
@@ -36,22 +19,16 @@ class Rule(RuleBasic):
         from_attributes = True
 
 
-class RuleCreate(RuleBasic):
-    url_id: int
+class CommonRuleCreate(CommonRuleBasic):
     account_user: list[str] | None = Field(default_factory=list)
     account_group: list[str] | None = Field(default_factory=list)
 
-class RuleUpdateBasic(RuleBasic):
-    method: Method | None = None
+class CommonRuleUpdate(CommonRuleBasic):
     status_code: int | None = None
     message_code: str | None = None
     description: str | None = None
     account_user: list[str] | None = None
     account_group: list[str] | None = None
 
-
-class RuleUpdate(RuleUpdateBasic):
-    url_id: int | None = None
-
-class RuleMultipleUpdate(RuleUpdate):
+class CommonRuleUpdateMultipleUpdate(CommonRuleUpdate):
     id: int

@@ -106,8 +106,25 @@ class APIUrlOperate(GeneralOperate, APIUrlFunction):
     def get_path_index_table(self, path: str):
         return self.url_operate.read_from_redis_by_key_set_without_exception({path}, 1)
 
-    def get_rule_index_table(self, complex_key: str):
+    def __get_rule_index_table(self, complex_key: str):
         return self.rule_operate.read_from_redis_by_key_set_without_exception({complex_key}, 1)
 
-    def get_rule_table(self, key_set: set):
+    def __get_rule_table(self, key_set: set):
         return self.rule_operate.read_from_redis_by_key_set_without_exception(key_set, 0)
+
+    def __complex_key_get_rule(self, complex_key: str):
+        rule_list = self.__get_rule_index_table(complex_key)
+        if rule_list:
+            return self.__get_rule_table({i for i in rule_list[0]})[0]
+        else:
+            return None
+
+    def is_notify(self, complex_key:str)->(bool, dict):
+        is_notify = False
+        rule = self.__complex_key_get_rule(complex_key) or {}
+        if rule:
+            if not rule["account_group"] and not rule["account_user"]:
+                print("rule has no account to notify")
+            else:
+                is_notify = True
+        return is_notify, rule

@@ -50,4 +50,23 @@ class Rule(Base):
     account_group = Column(JSON)
 
     created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)  # 最後更新時間
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+
+class CommonRule(Base):
+    __tablename__ = "common_rule"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+
+    status_code = Column(Integer, nullable=False)
+    message_code = Column(String(256), default="", nullable=False)
+    description = Column(String(256))
+    account_user = Column(JSON)
+    account_group = Column(JSON)
+
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+
+    __table_args__ = (
+        UniqueConstraint('status_code', 'message_code', name='_status_code_message_code_uc'),
+    )

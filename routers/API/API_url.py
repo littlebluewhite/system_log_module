@@ -21,7 +21,7 @@ class APIUrlRouter(APIUrlOperate):
     def create(self):
         router = APIRouter(
             prefix="/api/url",
-            tags=["API", "url"],
+            tags=["url"],
             dependencies=[],
         )
         create_schemas = self.create_schemas

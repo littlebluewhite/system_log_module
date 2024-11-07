@@ -5,21 +5,22 @@ from general_operator.app.SQL.database import SQLDB
 from general_operator.app.influxdb.influxdb import InfluxDB
 from general_operator.app.redis_db.redis_db import RedisDB
 from general_operator.function.exception import GeneralOperatorException
-from general_operator.routers.General_table_router import GeneralRouter
 from general_operator.routers.all_table import AllTableRouter
 from redis.client import Redis
 import data
-import data.rule, data.url
 import data.API.API_url
 import data.API.API_log
+import data.API.API_common_rule
 from app.SQL import models
 from function.config_manager import ConfigManager
+from routers.API.API_common_rule import APICommonRuleRouter
 from routers.API.API_log import APILogRouter
 from routers.API.API_url import APIUrlRouter
 
 # from fastapi.security.api_key import APIKeyHeader
 
 from version import version
+
 
 def create_connection(config):
     redis_db = RedisDB(config.redis.to_dict()).redis_client()
@@ -44,10 +45,8 @@ def create_app(db: SQLDB, redis_db: Redis, influxdb: InfluxDB):
                                     GeneralOperatorException, db_session).create())
     app.include_router(APILogRouter(data.API.API_log, redis_db, influxdb,
                                     GeneralOperatorException, db_session).create())
-    app.include_router(GeneralRouter(data.url, redis_db, influxdb,
-                                     GeneralOperatorException, db_session).create())
-    app.include_router(GeneralRouter(data.rule, redis_db, influxdb,
-                                     GeneralOperatorException, db_session).create())
+    app.include_router(APICommonRuleRouter(data.API.API_common_rule, redis_db, influxdb,
+                                           GeneralOperatorException, db_session).create())
     app.include_router(AllTableRouter(module=data, redis_db=redis_db, influxdb=influxdb,
                                       exc=GeneralOperatorException, db_session=db_session,
                                       is_initial=ConfigManager.server.is_initial).create())

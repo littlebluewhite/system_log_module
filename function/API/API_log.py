@@ -6,6 +6,8 @@ import grpc
 from general_operator.function.General_operate import GeneralOperate
 import influxdb_client
 import data.API.API_url
+import data.API.API_common_rule
+from function.API.API_common_rule import APICommonRuleOperate
 
 from function.API.API_url import APIUrlOperate
 from function.config_manager import ConfigManager
@@ -18,6 +20,7 @@ class APILogOperate(GeneralOperate):
     def __init__(self, module, redis_db, influxdb, exc):
         GeneralOperate.__init__(self, module, redis_db, influxdb, exc)
         self.api_url_operate = APIUrlOperate(data.API.API_url, redis_db, influxdb, exc)
+        self.api_common_rule_operate = APICommonRuleOperate(data.API.API_common_rule, redis_db, influxdb, exc)
 
     def get_logs(self, start, stop, modules, submodule, item, methods,
                  status_code, message_code, account, ip):
@@ -87,36 +90,20 @@ class APILogOperate(GeneralOperate):
                   .field("data", log.json())]
         self.write(points)
 
+        # check common rule
+        common_complex_key = f"{log.status_code}{log.message_code}"
+        common_rule_is_notify, common_rule = self.api_common_rule_operate.is_notify(common_complex_key)
+
+        # rule initial
+        rule_is_notify, rule = False, {}
+
+        # get url
         path_list = self.api_url_operate.get_path_index_table(
             f"{log.module}{log.submodule}{log.item}")
         if path_list:
             # check rule
-            complex_key = f"{path_list[0][0]}{log.method}{log.status_code}{log.message_code}"
-            rule_list = self.api_url_operate.get_rule_index_table(complex_key)
-            if rule_list:
-                rule_id = rule_list[0][0]
-                print("rule id: ", rule_id)
-                rule = self.api_url_operate.get_rule_table({rule_id})[0]
-
-                if not rule["account_group"] and not rule["account_user"]:
-                    print("no account to notify")
-                    return
-
-
-                # notify
-                notification_message = (f"module: {log.module}, submodule: {log.submodule}, item: {log.item},"
-                                        f" method: {log.method}, status_code: {log.status_code},"
-                                        f" message_code: {log.message_code}, log_message: {log.message},"
-                                        f" rule_description: {rule["description"]}")
-                try:
-                    a = time.time()
-                    self.notify(notification_message, rule["account_group"],
-                                rule["account_user"], [])
-                    print("notify cost: ", time.time() - a)
-                    print("notify success")
-                except Exception as e:
-                    print("notify error: ", e)
-
+            rule_complex_key = f"{path_list[0][0]}{log.method}{log.status_code}{log.message_code}"
+            rule_is_notify, rule = self.api_url_operate.is_notify(rule_complex_key)
 
         else:
             # create new url
@@ -129,6 +116,33 @@ class APILogOperate(GeneralOperate):
             )]
             self.api_url_operate.create_urls(url_create_list, db)
             print("create url success")
+
+        if common_rule_is_notify or rule_is_notify:
+            # notify
+            description = common_rule.get("description", "") or rule.get("description", "")
+            account_group = common_rule.get("account_group", []) + rule.get("account_group", [])
+            account_user = common_rule.get("account_user", []) + rule.get("account_user", [])
+            print("account_group: ", account_group)
+            print("account_user: ", account_user)
+            notification_message = (
+                f"""
+log message: {log.message}
+timestamp: {log.timestamp}
+module: {log.module}
+submodule: {log.submodule}
+item: {log.item} method: {log.method}
+status code: {log.status_code}
+message code: {log.message_code}
+rule description: {description}"""
+            )
+            try:
+                now = time.time()
+                self.notify(notification_message, account_group,
+                            account_user, [])
+                print("notify cost: ", time.time() - now)
+                print("notify success")
+            except Exception as e:
+                print("notify error: ", e)
 
     @staticmethod
     def notify(message, groups, accounts, emails):
