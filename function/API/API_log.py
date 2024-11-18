@@ -1,6 +1,7 @@
 import csv
 import json
 import time
+from datetime import timezone, timedelta, datetime
 
 import grpc
 from general_operator.function.General_operate import GeneralOperate
@@ -15,12 +16,26 @@ from server.proto import notification_pb2_grpc, notification_pb2
 
 csv.field_size_limit(10 ** 7)
 
+class APILogFunction:
+    @staticmethod
+    def timestamp_formate_str(timestamp):
+        tz_offset = timezone(timedelta(hours=8))
+        dt = datetime.fromtimestamp(timestamp, tz=tz_offset)
+        formatted_datetime = dt.strftime('%Y-%m-%d-%H:%M:%S%z')
+        return f"{formatted_datetime[:-2]}:{formatted_datetime[-2:]}"
 
-class APILogOperate(GeneralOperate):
+
+class APILogOperate(GeneralOperate, APILogFunction):
     def __init__(self, module, redis_db, influxdb, exc):
         GeneralOperate.__init__(self, module, redis_db, influxdb, exc)
         self.api_url_operate = APIUrlOperate(data.API.API_url, redis_db, influxdb, exc)
         self.api_common_rule_operate = APICommonRuleOperate(data.API.API_common_rule, redis_db, influxdb, exc)
+        self.module_map = {
+            "node_object": "點位模組",
+            "alarm": "告警模組",
+            "notification": "通知模組",
+            "account": "帳管模組",
+        }
 
     def get_logs(self, start, stop, modules, submodule, item, methods,
                  status_code, message_code, account, ip):
@@ -126,31 +141,34 @@ class APILogOperate(GeneralOperate):
             print("account_user: ", account_user)
             notification_message = (
                 f"""
-log message: {log.message}
+錯誤訊息: {log.message}
+rule description: {description}
 timestamp: {log.timestamp}
-module: {log.module}
-submodule: {log.submodule}
-item: {log.item} method: {log.method}
+url: {log.api_url}
+method: {log.method}
 status code: {log.status_code}
 message code: {log.message_code}
-rule description: {description}"""
+module: {log.module}
+submodule: {log.submodule}
+item: {log.item}"""
             )
             try:
                 now = time.time()
-                self.notify(notification_message, account_group,
-                            account_user, [])
+                subject = f"Dashboard AP Alert_{self.timestamp_formate_str(log.timestamp)}_{self.module_map[log.module]}_{description}"
+                self.notify(notification_message, subject, account_group,
+                            account_user, ["wilson.lin@nadisystem.com"])
                 print("notify cost: ", time.time() - now)
                 print("notify success")
             except Exception as e:
                 print("notify error: ", e)
 
     @staticmethod
-    def notify(message, groups, accounts, emails):
+    def notify(message, subject, groups, accounts, emails):
         with grpc.insecure_channel(f'{ConfigManager.server.notification_host}') as channel:
             stub = notification_pb2_grpc.NotificationServiceStub(channel)
             request = notification_pb2.EmailSendRequest(
-                sender="System log",
-                subject="Log notification",
+                sender="3D Dashboard",
+                subject=subject,
                 message=message,
                 groups=groups,
                 accounts=accounts,
