@@ -156,7 +156,7 @@ item: {log.item}"""
                 now = time.time()
                 subject = f"Dashboard AP Alert_{self.timestamp_formate_str(log.timestamp)}_{self.module_map[log.module]}_{description}"
                 self.notify(notification_message, subject, account_group,
-                            account_user, ["wilson.lin@nadisystem.com"])
+                            account_user, [])
                 print("notify cost: ", time.time() - now)
                 print("notify success")
             except Exception as e:
